@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
                 String jsonMovieResponse = NetworkUtils.
                         getResponseFromHttpUrl(movieDbUrl);
 
-                String[][] jsonMovieData = MovieJsonParser
+                String[] jsonMovieData = MovieJsonParser
                         .getMovieStringsFromJson(MainActivity.this, jsonMovieResponse);
 
                 return jsonMovieData;
