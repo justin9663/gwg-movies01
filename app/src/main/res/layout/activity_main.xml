@@ -27,5 +27,10 @@
         android:id="@+id/getJson"
         android:text="Click Me!"/>
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/test_tv" />
+
 
 </LinearLayout>

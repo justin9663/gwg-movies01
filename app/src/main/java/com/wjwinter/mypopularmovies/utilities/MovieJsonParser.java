@@ -3,22 +3,28 @@ package com.wjwinter.mypopularmovies.utilities;
 
 import android.content.Context;
 
+import com.wjwinter.mypopularmovies.modal.Movie;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 /**
  * Utility used to parse the Movie DB Json data
  */
 public class MovieJsonParser {
 
-    public static String[][] getMovieStringsFromJson(Context context, String movieJsonStr)
+    public static ArrayList<Movie> getMovieStringsFromJson(Context context, String movieJsonStr)
             throws JSONException {
 
         final String MOVIE_LIST = "results";
 
         //String array to hold all of the movie data
-        String[][] parsedMovieData = null;
+        //Changed from string array to movie array, and that was causing errors.
+        //Changed this from an array to an array list of movies
+        ArrayList<Movie> parsedMovieData = new ArrayList<>();
 
         JSONObject movieJsonObj = new JSONObject(movieJsonStr);
 
@@ -26,13 +32,14 @@ public class MovieJsonParser {
 
         JSONArray movieArray = movieJsonObj.getJSONArray(MOVIE_LIST);
 
-        parsedMovieData = new String[movieArray.length()][];
+        //Don't need to set the size with an array list
+//        parsedMovieData = new Movie[movieArray.length()];
 
 
         for (int i = 0; i < movieArray.length(); i++) {
 
-            String[] movieDetails = new String[5];
-            String movieId;
+            Movie movieDetails = new Movie();
+            int movieId;
             String title;
             String moviePosterURL;
             String overview;
@@ -40,19 +47,22 @@ public class MovieJsonParser {
 
             JSONObject movie = movieArray.getJSONObject(i);
 
-            movieId = movie.getString("id");
+            movieId = movie.getInt("id");
             title = movie.getString("title");
             moviePosterURL = movie.getString("poster_path");
             overview = movie.getString("overview");
             releaseDate = movie.getString("release_date");
 
-            movieDetails[0] = movieId;
-            movieDetails[1] = title;
-            movieDetails[2] = moviePosterURL;
-            movieDetails[3] = overview;
-            movieDetails[4] = releaseDate;
+            movieDetails.setMovieId(movieId);
+            movieDetails.setTitle(title);
+            movieDetails.setMoviePosterURL(moviePosterURL);
+            movieDetails.setOverview(overview);
+            movieDetails.setReleaseDate(releaseDate);
 
-            parsedMovieData[i] = movieDetails;
+            //This is adding only the first item to the array. This is why you made a
+            // multi dimen array, so you could set different items.
+            // Perhaps creating a movie array??
+            parsedMovieData.add(i, movieDetails);
 
         }
         return parsedMovieData;

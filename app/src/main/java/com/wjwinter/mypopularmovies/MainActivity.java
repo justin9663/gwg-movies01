@@ -12,10 +12,13 @@ import com.wjwinter.mypopularmovies.utilities.MovieJsonParser;
 import com.wjwinter.mypopularmovies.utilities.NetworkUtils;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     TextView movieDbUrl;
+    TextView testTextView;
     Button clickMe;
     String movieJson;
 
@@ -27,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
         //Get a reference to the movie url textview
         //Set the text in the GetMovieJsonTask onPostExecute method
         movieDbUrl = findViewById(R.id.movie_url);
+        testTextView = findViewById(R.id.test_tv);
 
         try {
             Movie movie = NetworkUtils.parseMovieJsonData(movieJson);
@@ -51,7 +55,8 @@ public class MainActivity extends AppCompatActivity {
         new GetMovieJsonTask().execute(moviePathArray);
     }
 
-    private class GetMovieJsonTask extends AsyncTask<String[], String[], String[]> {
+    //The last param is type you will return from doInBackground and its also input to onPostExecute.
+    private class GetMovieJsonTask extends AsyncTask<String[], String[], List<Movie>> {
 
 
         protected void onPreExecute() {
@@ -61,8 +66,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        protected String[] doInBackground(String[]... strings) {
-            String[] moviePath = strings[0];
+        protected ArrayList<Movie> doInBackground(String[]... params) {
+            String[] moviePath = params[0];
             URL movieDbUrl = NetworkUtils.buildUrl(moviePath[0]);
 
             try {
@@ -70,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
                 String jsonMovieResponse = NetworkUtils.
                         getResponseFromHttpUrl(movieDbUrl);
 
-                String[] jsonMovieData = MovieJsonParser
+                ArrayList<Movie> jsonMovieData = MovieJsonParser
                         .getMovieStringsFromJson(MainActivity.this, jsonMovieResponse);
 
                 return jsonMovieData;
@@ -83,8 +88,16 @@ public class MainActivity extends AppCompatActivity {
 
 
         @Override
-        protected void onPostExecute(String[] strings) {
-            super.onPostExecute(strings);
+        protected void onPostExecute(List<Movie> movies) {
+//            if (movies != null) {
+//                for (Movie movieString : strings) {
+//                    movieDbUrl.append(movieString + "\n\n");
+//                }
+//            } else {
+//                movieDbUrl.setText("Nope!");
+//            }
+
+            super.onPostExecute(movies);
         }
     }
 
