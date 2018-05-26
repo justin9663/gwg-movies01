@@ -1,9 +1,13 @@
 package com.wjwinter.mypopularmovies;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.Toast;
 
 import com.wjwinter.mypopularmovies.data.MoviePreferences;
 import com.wjwinter.mypopularmovies.modal.Movie;
@@ -14,23 +18,45 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+        implements MoviePosterAdapter.MoviePosterAdapterOnClickHandler{
 
-    // Variable for the list of movies
+    // Variables
     List<Movie> myMovies;
+    String[] movieUrls;
+
+    private RecyclerView mRecyclerView;
+    private MoviePosterAdapter mMovieAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Instantiate the list for the movies
-        myMovies = new ArrayList<>();
+        //Get a reference to the recycler view
+        mRecyclerView = findViewById(R.id.movie_recycler_view);
+
+        LinearLayoutManager layoutManager =
+                new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+
+        mRecyclerView.setLayoutManager(layoutManager);
+
+        mMovieAdapter = new MoviePosterAdapter(this);
+
+        mRecyclerView.setAdapter(mMovieAdapter);
 
         // Call the load movie method to get the movie data
         loadMovieData();
+
+//        movieUrls = new String[myMovies.size()];
+//        int i = 0;
+//        for (Movie movie : myMovies) {
+//            movieUrls[i] = movie.getMoviePosterURL();
+//        }
 //        ArrayAdapter<Movie> adapter = new ArrayAdapter<>(this, )
     }
+
+
 
     // Method used to load the data from the Async task
     private void loadMovieData() {
@@ -40,6 +66,16 @@ public class MainActivity extends AppCompatActivity {
 
         // The Async task to load the movie data
         new GetMovieJsonTask().execute(moviePathArray);
+    }
+
+    @Override
+    public void onClick(String moviePosterUrl) {
+        Context context =  this;
+        Toast.makeText(context, moviePosterUrl, Toast.LENGTH_LONG).show();
+    }
+
+    private void showMoviePosterUrls() {
+        mRecyclerView.setVisibility(View.VISIBLE);
     }
 
     /** AsyncTask used to load the data from the movie db
@@ -89,11 +125,15 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(List<Movie> movies) {
             // A loop to add all the movies to the myMovie list
-            int i = 0;
-            for (Movie movie : movies) {
-                myMovies.add(i, movie);
-                i++;
+            if (movies.size() != 0){
+                showMoviePosterUrls();
+                mMovieAdapter.setMovieUrls(movies);
             }
+//            int i = 0;
+//            for (Movie movie : movies) {
+//                myMovies.add(i, movie);
+//                i++;
+//            }
         }
     }
 }

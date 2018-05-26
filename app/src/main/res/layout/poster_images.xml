@@ -5,11 +5,16 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <ImageView
+    <!--<ImageView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/poster_iv"-->
+        <!--android:layout_margin="1dp"-->
+        <!--android:adjustViewBounds="true"/>-->
+
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/poster_iv"
-        android:layout_margin="1dp"
-        android:adjustViewBounds="true"/>
+        android:id="@+id/poster_url_tv"/>
 
 </LinearLayout>

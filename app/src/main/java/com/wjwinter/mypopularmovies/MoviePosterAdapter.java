@@ -1,96 +1,118 @@
 package com.wjwinter.mypopularmovies;
 
-import android.app.Activity;
 import android.content.Context;
-import android.graphics.BitmapFactory;
-import android.graphics.Point;
 import android.support.v7.widget.RecyclerView;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.ImageView;
+import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
+import com.wjwinter.mypopularmovies.R;
+import com.wjwinter.mypopularmovies.modal.Movie;
 
-import java.util.ArrayList;
+import java.util.List;
 
-public class MoviePosterAdapter extends RecyclerView.Adapter {
+public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.MoviePosterAdapterViewHolder> {
 
-    private Activity activity;
-    private ArrayList<String> images;
-    private int screenWidth;
+    private String[] posterUrls;
 
-    //Constructor
-    public MoviePosterAdapter(Activity activity, ArrayList<String> images){
-        this.activity = activity;
-        this.images = images;
-        WindowManager wm = (WindowManager) activity.getSystemService(Context.WINDOW_SERVICE);
-        Display display = wm.getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        screenWidth = size.x;
+    /**
+     * An on-click handler to make it easy for an Activity to interface with
+     * the RecyclerView
+     */
+    private final MoviePosterAdapterOnClickHandler mClickHandler;
+
+    /**
+     * The interface that will receive the onClick messages.
+     */
+    public interface MoviePosterAdapterOnClickHandler {
+        void onClick(String moviePosterUrl);
     }
 
-
-    private AdapterView.OnItemClickListener onItemClickListener;
-    public void setOnItemClickListener(AdapterView.OnItemClickListener onItemClickListener){
-        this.onItemClickListener = onItemClickListener;
+    /**
+     * Used to create a MoviePosterAdapter, the constructor
+     */
+    public MoviePosterAdapter(MoviePosterAdapterOnClickHandler clickHandler) {
+        mClickHandler = clickHandler;
     }
 
-    private void onItemHolderClick(MoviePosterViewHolder itemHolder) {
-        if (onItemClickListener != null) {
-            onItemClickListener.onItemClick(null, itemHolder.itemView,
-                    itemHolder.getAdapterPosition(), itemHolder.getItemId());
-        }
-    }
+    /**
+     * Cache of the children views for the movie posters
+     */
+    public class MoviePosterAdapterViewHolder extends RecyclerView.ViewHolder implements OnClickListener {
+        public final TextView mPosterTextView;
 
-    public class MoviePosterViewHolder extends RecyclerView.ViewHolder
-    implements View.OnClickListener {
-
-        public MoviePosterViewHolder(View itemView) {
-            super(itemView);
-            itemView.setOnClickListener(this);
+        public MoviePosterAdapterViewHolder(View view) {
+            super(view);
+            mPosterTextView = view.findViewById(R.id.poster_url_tv);
+            view.setOnClickListener(this);
         }
 
+        /**
+         * Used to tell what view was clicked on
+         **/
         @Override
-        public void onClick(View view) {
-            onItemHolderClick(this);
+        public void onClick(View v) {
+            int adapterPosition = getAdapterPosition();
+            String posterUrl = posterUrls[adapterPosition];
+            mClickHandler.onClick(posterUrl);
         }
     }
 
-    public MoviePosterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(activity)
-                .inflate(R.layout.poster_images, parent, false);
-        Holder dataObjectHolder = new Holder(view);
-        return dataObjectHolder;
-    }
-
+    /**
+     * This method gets called when a new view is needed
+     *
+     */
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        final Holder mHolder = (Holder) holder;
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        Picasso.with(activity)
-                .load(images.get(position))
-                .resize(screenWidth / 2, 300)
-                .centerCrop()
-                .into(mHolder.images);
+    public MoviePosterAdapterViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+        Context context = viewGroup.getContext();
+        int layoutIdForListItem = R.layout.poster_images;
+        LayoutInflater inflater = LayoutInflater.from(context);
+        boolean shouldAttachToParentImmediately = false;
+
+        View view = inflater.inflate(layoutIdForListItem, viewGroup, shouldAttachToParentImmediately);
+        return new MoviePosterAdapterViewHolder(view);
     }
 
+    /**
+     * OnBindViewHolder is called by the RecyclerView to display the data at the specified
+     * position.
+     */
+    @Override
+    public void onBindViewHolder(MoviePosterAdapterViewHolder moviePosterAdapterViewHolder, int position) {
+        String urlForThisPoster = posterUrls[position];
+        moviePosterAdapterViewHolder.mPosterTextView.setText(urlForThisPoster);
+    }
+
+    /**
+     * This method is used to get the total number of movie posters there are
+     */
     @Override
     public int getItemCount() {
-        return images.size();
+        if (null == posterUrls) return 0;
+        return posterUrls.length;
     }
 
-    public class Holder extends MoviePosterViewHolder {
-        private ImageView images;
-        public Holder(View itemView) {
-            super(itemView);
-            images = (ImageView) itemView.findViewById(R.id.poster_iv);
+    /**
+     * This method is used to set the movie urls forecast on the adapter
+     */
+    public void setMovieUrls(List<Movie> myMovies) {
+        posterUrls = getMovieUrls(myMovies);
+        notifyDataSetChanged();
+    }
+
+    /**
+     * This method is used to get the urls out of the movie objects
+     */
+
+    private String[] getMovieUrls(List<Movie> movies) {
+        int i = 0;
+        String[] movieUrls = new String[movies.size()];
+        for (Movie movie : movies) {
+            movieUrls[i] = movie.getMoviePosterURL();
+            i++;
         }
+        return movieUrls;
     }
-
 }
