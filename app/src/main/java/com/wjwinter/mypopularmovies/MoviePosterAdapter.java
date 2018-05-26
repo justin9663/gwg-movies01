@@ -6,15 +6,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.wjwinter.mypopularmovies.R;
+import com.wjwinter.mypopularmovies.data.MoviePreferences;
 import com.wjwinter.mypopularmovies.modal.Movie;
 
 import java.util.List;
 
 public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.MoviePosterAdapterViewHolder> {
 
+    /**
+     * Variable to hold all of the movie URLs.
+     */
     private String[] posterUrls;
 
     /**
@@ -41,11 +46,16 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
      * Cache of the children views for the movie posters
      */
     public class MoviePosterAdapterViewHolder extends RecyclerView.ViewHolder implements OnClickListener {
+//        For Testing using a TextView
         public final TextView mPosterTextView;
+
+//        For the ImageView
+//        public final ImageView mPosterImageView;
 
         public MoviePosterAdapterViewHolder(View view) {
             super(view);
             mPosterTextView = view.findViewById(R.id.poster_url_tv);
+//            mPosterImageView = view.findViewById(R.id.poster_iv);
             view.setOnClickListener(this);
         }
 
@@ -81,7 +91,9 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
      */
     @Override
     public void onBindViewHolder(MoviePosterAdapterViewHolder moviePosterAdapterViewHolder, int position) {
-        String urlForThisPoster = posterUrls[position];
+        String urlForThisPoster = MoviePreferences.MOVIE_IMAGE_URL +
+                MoviePreferences.IMAGE_FILE_SIZE + posterUrls[position];
+
         moviePosterAdapterViewHolder.mPosterTextView.setText(urlForThisPoster);
     }
 
