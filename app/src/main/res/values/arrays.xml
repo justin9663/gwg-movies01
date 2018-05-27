@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <string-array name="arrangeBy">
+
+        <item name="popular"></item>
+        <item name="votes"></item>
+    </string-array>
+
+    <string-array name="arrangeValues">
+        <item>Most Popular</item>
+        <item>Most Votes</item>
+
+    </string-array>
+    
+</resources>

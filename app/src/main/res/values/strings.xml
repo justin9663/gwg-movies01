@@ -8,4 +8,7 @@
     <string name="movie_description_label">Synopsis</string>
     <string name="release_date">Release Date</string>
     <string name="user_rating">User Rating</string>
+
+    <string name="menu_settings">Settings</string>
+    <string name="movie_details">Details</string>
 </resources>

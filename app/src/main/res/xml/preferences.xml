@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <ListPreference
+        android:title="Arrange Movies"
+        android:key="movie_pref"
+        android:defaultValue="1"
+        android:entries="@array/arrangeBy"
+        android:entryValues="@array/arrangeValues" />
+</PreferenceScreen>
