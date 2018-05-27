@@ -52,6 +52,7 @@ public class MovieJsonParser {
             movieDetails.setMoviePosterURL(movie.getString("poster_path"));
             movieDetails.setOverview(movie.getString("overview"));
             movieDetails.setReleaseDate(movie.getString("release_date"));
+            movieDetails.setUserRating(movie.getString("vote_average"));
 
             //Add the Movie object to the ArrayList
             parsedMovieData.add(i, movieDetails);

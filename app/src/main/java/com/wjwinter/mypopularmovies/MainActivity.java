@@ -1,13 +1,13 @@
 package com.wjwinter.mypopularmovies;
 
-import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.Toast;
 
 import com.wjwinter.mypopularmovies.data.MoviePreferences;
 import com.wjwinter.mypopularmovies.modal.Movie;
@@ -36,12 +36,12 @@ public class MainActivity extends AppCompatActivity
         //Get a reference to the recycler view
         mRecyclerView = findViewById(R.id.movie_recycler_view);
 
-        LinearLayoutManager layoutManager =
-                new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+//        LinearLayoutManager layoutManager =
+//                new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
 
-        mRecyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.setLayoutManager(new GridLayoutManager(MainActivity.this, 2));
 
-        mMovieAdapter = new MoviePosterAdapter(this);
+        mMovieAdapter = new MoviePosterAdapter(this, this);
 
         mRecyclerView.setAdapter(mMovieAdapter);
 
@@ -69,9 +69,18 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onClick(String moviePosterUrl) {
-        Context context =  this;
-        Toast.makeText(context, moviePosterUrl, Toast.LENGTH_LONG).show();
+    public void onClick(Movie clickedMovie) {
+        Intent intent = new Intent(this, MovieDetails.class);
+        intent.putExtra("movie_title", clickedMovie.getTitle());
+        intent.putExtra("release_date", clickedMovie.getReleaseDate());
+        intent.putExtra("user_rating", clickedMovie.getUserRating());
+        intent.putExtra("poster_url", clickedMovie.getMoviePosterURL());
+        intent.putExtra("movie_desc", clickedMovie.getOverview());
+        startActivity(intent);
+
+//        Used for testing what was clicked on when debugging
+//        Context context =  this;
+//        Toast.makeText(context, moviePosterUrl, Toast.LENGTH_LONG).show();
     }
 
     private void showMoviePosterUrls() {
@@ -127,7 +136,7 @@ public class MainActivity extends AppCompatActivity
             // A loop to add all the movies to the myMovie list
             if (movies.size() != 0){
                 showMoviePosterUrls();
-                mMovieAdapter.setMovieUrls(movies);
+                mMovieAdapter.setMovieDetails(movies);
             }
 //            int i = 0;
 //            for (Movie movie : movies) {

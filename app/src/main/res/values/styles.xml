@@ -8,4 +8,39 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="horizontal_rules">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">2dp</item>
+        <item name="android:background">#DDDDDD</item>
+        <item name="android:layout_marginTop">6dp</item>
+        <item name="android:layout_marginRight">10dp</item>
+        <item name="android:layout_marginLeft">10dp</item>
+    </style>
+
+    <style name="titles">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:fontFamily">sans-serif-black</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">22sp</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:shadowColor">@android:color/white</item>
+        <item name="android:shadowDy">3</item>
+        <item name="android:shadowDx">3</item>
+        <item name="android:shadowRadius">2</item>
+    </style>
+
+    <style name="attributes">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:paddingLeft">8dp</item>
+        <item name="android:paddingRight">8dp</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:shadowColor">@android:color/black</item>
+        <item name="android:shadowDy">2</item>
+        <item name="android:shadowDx">2</item>
+        <item name="android:shadowRadius">1</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
 </resources>

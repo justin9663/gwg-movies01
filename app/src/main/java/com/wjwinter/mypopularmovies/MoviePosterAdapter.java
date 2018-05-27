@@ -1,14 +1,20 @@
 package com.wjwinter.mypopularmovies;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Point;
 import android.support.v7.widget.RecyclerView;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
 import com.wjwinter.mypopularmovies.R;
 import com.wjwinter.mypopularmovies.data.MoviePreferences;
 import com.wjwinter.mypopularmovies.modal.Movie;
@@ -18,9 +24,15 @@ import java.util.List;
 public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.MoviePosterAdapterViewHolder> {
 
     /**
-     * Variable to hold all of the movie URLs.
+     * Variables
      */
+//    Used for the images of the poster URLs for testing
     private String[] posterUrls;
+    private List<Movie> mMovies;
+    private float[] userRatings;
+//    Used to tell picasso what what context to use
+    private Activity activity;
+    private int screenWidth;
 
     /**
      * An on-click handler to make it easy for an Activity to interface with
@@ -32,14 +44,20 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
      * The interface that will receive the onClick messages.
      */
     public interface MoviePosterAdapterOnClickHandler {
-        void onClick(String moviePosterUrl);
+        void onClick(Movie clickedMovie);
     }
 
     /**
      * Used to create a MoviePosterAdapter, the constructor
      */
-    public MoviePosterAdapter(MoviePosterAdapterOnClickHandler clickHandler) {
+    public MoviePosterAdapter(MoviePosterAdapterOnClickHandler clickHandler, Activity activity) {
         mClickHandler = clickHandler;
+        this.activity = activity;
+        WindowManager wm = (WindowManager) activity.getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        screenWidth = size.x;
     }
 
     /**
@@ -47,15 +65,15 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
      */
     public class MoviePosterAdapterViewHolder extends RecyclerView.ViewHolder implements OnClickListener {
 //        For Testing using a TextView
-        public final TextView mPosterTextView;
+//        public final TextView mPosterTextView;
 
 //        For the ImageView
-//        public final ImageView mPosterImageView;
+        public final ImageView mPosterImageView;
 
         public MoviePosterAdapterViewHolder(View view) {
             super(view);
-            mPosterTextView = view.findViewById(R.id.poster_url_tv);
-//            mPosterImageView = view.findViewById(R.id.poster_iv);
+//            mPosterTextView = view.findViewById(R.id.poster_url_tv);
+            mPosterImageView = view.findViewById(R.id.poster_iv);
             view.setOnClickListener(this);
         }
 
@@ -65,8 +83,12 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
         @Override
         public void onClick(View v) {
             int adapterPosition = getAdapterPosition();
-            String posterUrl = posterUrls[adapterPosition];
-            mClickHandler.onClick(posterUrl);
+            Movie clickedMovie = mMovies.get(adapterPosition);
+            mClickHandler.onClick(clickedMovie);
+
+//            Used a string for testing and debugging
+//            String posterUrl = posterUrls[adapterPosition];
+//            mClickHandler.onClick(posterUrl);
         }
     }
 
@@ -93,8 +115,12 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
     public void onBindViewHolder(MoviePosterAdapterViewHolder moviePosterAdapterViewHolder, int position) {
         String urlForThisPoster = MoviePreferences.MOVIE_IMAGE_URL +
                 MoviePreferences.IMAGE_FILE_SIZE + posterUrls[position];
+        Picasso.with(activity)
+                .load(urlForThisPoster)
+                .into(moviePosterAdapterViewHolder.mPosterImageView);
 
-        moviePosterAdapterViewHolder.mPosterTextView.setText(urlForThisPoster);
+//        Used for testing using an text view to display the urls for the images
+//        moviePosterAdapterViewHolder.mPosterTextView.setText(urlForThisPoster);
     }
 
     /**
@@ -102,20 +128,24 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
      */
     @Override
     public int getItemCount() {
-        if (null == posterUrls) return 0;
+        if (posterUrls == null) return 0;
         return posterUrls.length;
     }
 
     /**
      * This method is used to set the movie urls forecast on the adapter
      */
-    public void setMovieUrls(List<Movie> myMovies) {
-        posterUrls = getMovieUrls(myMovies);
+    public void setMovieDetails(List<Movie> movies) {
+        this.mMovies = movies;
+//        Used to get the movie urls
+        posterUrls = getMovieUrls(movies);
+        userRatings = getMovieRatings(movies);
         notifyDataSetChanged();
     }
 
     /**
      * This method is used to get the urls out of the movie objects
+     * Mainly used for testing purposes.
      */
 
     private String[] getMovieUrls(List<Movie> movies) {
@@ -126,5 +156,14 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
             i++;
         }
         return movieUrls;
+    }
+    private float[] getMovieRatings(List<Movie> movies) {
+        float[] movieRatings = new float[movies.size()];
+        int i = 0;
+        for (Movie movie : movies) {
+            movieRatings[i] = Float.valueOf(movie.getUserRating());
+            i++;
+        }
+        return movieRatings;
     }
 }

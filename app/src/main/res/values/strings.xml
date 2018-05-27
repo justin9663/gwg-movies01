@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">MyPopularMovies</string>
+
+    <!-- Content Description -->
+    <string name="movie_poster_description">Movie Poster Image</string>
+
+    <!-- Movie Labels -->
+    <string name="movie_description_label">Synopsis</string>
+    <string name="release_date">Release Date</string>
+    <string name="user_rating">User Rating</string>
 </resources>
