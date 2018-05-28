@@ -1,7 +1,10 @@
 package com.wjwinter.mypopularmovies;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.wjwinter.mypopularmovies.data.MoviePreferences;
@@ -30,6 +34,7 @@ public class MainActivity extends AppCompatActivity
     // Variables
     List<Movie> myMovies;
     String[] movieUrls;
+    TextView errorMessage;
 
 
     private RecyclerView mRecyclerView;
@@ -81,6 +86,16 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+    public boolean isNetworkConnected () {
+        ConnectivityManager cm = (ConnectivityManager)
+                this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = cm.getActiveNetworkInfo();
+        if(networkInfo != null && networkInfo.isConnectedOrConnecting()) {
+            return true;
+        }
+        return false;
+    }
+
     private void setupSharedPreferences() {
         SharedPreferences sharedPreferences =
                 PreferenceManager.getDefaultSharedPreferences(this);
@@ -89,12 +104,16 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void sortMoviesPopular()  {
+        errorMessage = findViewById(R.id.error_message);
+        errorMessage.setVisibility(View.GONE);
         String[] moviePathArray = {MoviePreferences.POPULAR_MOVIE_PATH};
 
         new GetMovieJsonTask().execute(moviePathArray);
     }
 
     private void sortMoviesRating()  {
+        errorMessage = findViewById(R.id.error_message);
+        errorMessage.setVisibility(View.GONE);
         String[] moviePathArray = {MoviePreferences.TOP_RATED_PATH};
 
         new GetMovieJsonTask().execute(moviePathArray);
@@ -102,12 +121,19 @@ public class MainActivity extends AppCompatActivity
 
     // Method used to load the data from the Async task
     private void loadMovieData() {
+        errorMessage = findViewById(R.id.error_message);
+        if(isNetworkConnected()) {
+            errorMessage.setVisibility(View.GONE);
+            // String array of the possible paths that will be used to get movie data
+            String[] moviePathArray = {MoviePreferences.MOVIE_DATA_STRING};
 
-        // String array of the possible paths that will be used to get movie data
-        String[] moviePathArray = {MoviePreferences.MOVIE_DATA_STRING};
+            // The Async task to load the movie data
+            new GetMovieJsonTask().execute(moviePathArray);
+        } else{
 
-        // The Async task to load the movie data
-        new GetMovieJsonTask().execute(moviePathArray);
+            errorMessage.setText("There needs to be an internet conncetion for the movie app to work.");
+        }
+
     }
 
     @Override
