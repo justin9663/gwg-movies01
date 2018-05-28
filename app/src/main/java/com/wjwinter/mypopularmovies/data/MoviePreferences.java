@@ -12,6 +12,15 @@ public class MoviePreferences {
     //Append the URL with this string to get the movie data
     public static final String MOVIE_DATA_STRING = "discover/movie";
 
+    //Append the url with sort by
+    public static final String SORT_ORDER = "sort_by";
+
+    //Append the URL for the most popular movies
+    public static final String POPULAR_MOVIE_PATH = "movie/popular";
+
+    //Append the URL for the top rated app
+    public static final String TOP_RATED_PATH = "movie/top_rated";
+
     //Create a static string to get the movie db URL
     public static final String MOVIE_DB_URL = "https://api.themoviedb.org/3/";
 

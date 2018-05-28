@@ -3,13 +3,13 @@
     
     <string-array name="arrangeBy">
 
-        <item name="popular"></item>
-        <item name="votes"></item>
+        <item name="popular">Sort by most Popular</item>
+        <item name="votes">Sort by most votes</item>
     </string-array>
 
     <string-array name="arrangeValues">
-        <item>Most Popular</item>
-        <item>Most Votes</item>
+        <item>popular</item>
+        <item>top_rated</item>
 
     </string-array>
     

@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.wjwinter.mypopularmovies.data.MoviePreferences;
 import com.wjwinter.mypopularmovies.modal.Movie;
@@ -30,6 +31,7 @@ public class MainActivity extends AppCompatActivity
     List<Movie> myMovies;
     String[] movieUrls;
 
+
     private RecyclerView mRecyclerView;
     private MoviePosterAdapter mMovieAdapter;
 
@@ -42,9 +44,6 @@ public class MainActivity extends AppCompatActivity
         //Get a reference to the recycler view
         mRecyclerView = findViewById(R.id.movie_recycler_view);
 
-//        LinearLayoutManager layoutManager =
-//                new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-
         mRecyclerView.setLayoutManager(new GridLayoutManager(MainActivity.this, 2));
 
         mMovieAdapter = new MoviePosterAdapter(this, this);
@@ -53,13 +52,6 @@ public class MainActivity extends AppCompatActivity
 
         // Call the load movie method to get the movie data
         loadMovieData();
-
-//        movieUrls = new String[myMovies.size()];
-//        int i = 0;
-//        for (Movie movie : myMovies) {
-//            movieUrls[i] = movie.getMoviePosterURL();
-//        }
-//        ArrayAdapter<Movie> adapter = new ArrayAdapter<>(this, )
     }
 
     @Override
@@ -72,10 +64,19 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.movie_settings) {
-            Intent intent = new Intent(this, SettingsActivity.class);
-            startActivity(intent);
-            return true;
+//        if (id == R.id.movie_settings) {
+//            Intent intent = new Intent(this, SettingsActivity.class);
+//            startActivity(intent);
+//            return true;
+//        }
+        if (id == R.id.sort_popular) {
+            Toast.makeText(this, "Most Popular", Toast.LENGTH_LONG).show();
+            sortMoviesPopular();
+        }
+
+        if (id == R.id.sort_rating) {
+            Toast.makeText(this, "Top Rated", Toast.LENGTH_LONG).show();
+            sortMoviesRating();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -84,6 +85,19 @@ public class MainActivity extends AppCompatActivity
         SharedPreferences sharedPreferences =
                 PreferenceManager.getDefaultSharedPreferences(this);
 
+
+    }
+
+    private void sortMoviesPopular()  {
+        String[] moviePathArray = {MoviePreferences.POPULAR_MOVIE_PATH};
+
+        new GetMovieJsonTask().execute(moviePathArray);
+    }
+
+    private void sortMoviesRating()  {
+        String[] moviePathArray = {MoviePreferences.TOP_RATED_PATH};
+
+        new GetMovieJsonTask().execute(moviePathArray);
     }
 
     // Method used to load the data from the Async task
@@ -147,7 +161,7 @@ public class MainActivity extends AppCompatActivity
                 String jsonMovieResponse = NetworkUtils.
                         getResponseFromHttpUrl(movieDbUrl);
 
-                // Get the moie data from the json parser using the response
+                // Get the movie data from the json parser using the response
                 ArrayList<Movie> jsonMovieData = MovieJsonParser
                         .getMovieStringsFromJson(MainActivity.this, jsonMovieResponse);
 

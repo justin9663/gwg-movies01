@@ -32,8 +32,6 @@ public class MovieJsonParser {
         //Create a jsonObject from the json string data
         JSONObject movieJsonObj = new JSONObject(movieJsonStr);
 
-        //TODO: Will want to do some error checking here to see if there are any errors with the data
-
         // Get the jsonArray out of the jsonObject using th e MOVIE_LIST constant
         JSONArray movieArray = movieJsonObj.getJSONArray(MOVIE_LIST);
 

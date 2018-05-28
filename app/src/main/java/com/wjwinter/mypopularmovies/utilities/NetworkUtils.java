@@ -3,6 +3,7 @@ package com.wjwinter.mypopularmovies.utilities;
 import android.net.Uri;
 import android.util.Log;
 
+import com.wjwinter.mypopularmovies.data.MoviePreferences;
 import com.wjwinter.mypopularmovies.modal.Movie;
 
 import org.json.JSONArray;
